@@ -1,24 +1,36 @@
-import logo from './logo.svg';
-import './App.css';
+import React, { useState } from 'react';
+import { BrowserRouter as Router, Route, Routes } from 'react-router-dom';
+import Dashboard from './components/Dashboard';
+import VehicleForm from './components/VehicleForm';
+import VehicleList from './components/VehicleList';
+import Navbar from './components/Navbar';
+import demoVehicles from './components/DemoVehicles';
 
 function App() {
+  const [vehicles, setVehicles] = useState(demoVehicles);
   return (
-    <div className="App">
-      <header className="App-header">
-        <img src={logo} className="App-logo" alt="logo" />
-        <p>
-          Edit <code>src/App.js</code> and save to reload.
-        </p>
-        <a
-          className="App-link"
-          href="https://reactjs.org"
-          target="_blank"
-          rel="noopener noreferrer"
-        >
-          Learn React
-        </a>
-      </header>
-    </div>
+      <Router>
+        <div className="min-h-screen bg-gray-100">
+          <Navbar />
+          <div className="container mx-auto p-6">
+            <Routes>
+              <Route path="/" element={<Dashboard vehicles={vehicles} />} />
+              <Route
+                path="/vehicles"
+                element={<VehicleList vehicles={vehicles} setVehicles={setVehicles} />}
+              />
+              <Route
+                path="/add"
+                element={<VehicleForm vehicles={vehicles} setVehicles={setVehicles} />}
+              />
+              <Route
+                path="/edit/:id"
+                element={<VehicleForm vehicles={vehicles} setVehicles={setVehicles} />}
+              />
+            </Routes>
+          </div>
+        </div>
+      </Router>
   );
 }
 
