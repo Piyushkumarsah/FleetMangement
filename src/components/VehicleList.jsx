@@ -1,53 +1,14 @@
 import React, { useEffect } from 'react';
 import { Link } from 'react-router-dom';
+import { useDispatch, useSelector } from 'react-redux';
+import { removeVehicle, updateVehicle } from '../features/vehicles/vehicleSlice';
 
-const VehicleList = ({ vehicles, setVehicles, setSelectedVehicle }) => {
-//   const updateVehicleStatus = (updatedVehicle) => {
-//     setVehicles((prevVehicles) =>
-//       prevVehicles.map((vehicle) =>
-//         vehicle.id === updatedVehicle.id ? updatedVehicle : vehicle
-//       )
-//     );
-//   };
-
-  useEffect(() => {
-    const intervalId = setInterval(() => {
-      const now = new Date();
-      
-      setVehicles((prevVehicles) =>
-        prevVehicles.map((vehicle) => {
-          if (vehicle.scheduledChargingTime && new Date(vehicle.scheduledChargingTime) <= now) {
-            return { ...vehicle, status: 'Charging', battery: Math.min(100, vehicle.battery + 10) };
-          }
-
-          if (vehicle.status === 'In Transit') {
-            const newDistance = vehicle.distanceTravelled + 3;
-
-            const distanceIncreasedBy3km = Math.floor(newDistance / 3) > Math.floor(vehicle.distanceTravelled / 3);
-            const newBattery = distanceIncreasedBy3km
-              ? Math.max(0, vehicle.battery - 1)
-              : vehicle.battery;
-
-            return { ...vehicle, battery: newBattery, distanceTravelled: newDistance };
-          } else if (vehicle.status === 'Charging') {
-            const newBattery = Math.min(100, vehicle.battery + 10);
-            return { ...vehicle, battery: newBattery };
-          }
-
-          return vehicle;
-        })
-      );
-    }, 600000); 
-
-    return () => clearInterval(intervalId);
-  }, [setVehicles]);
-
-//   const handleEditClick = (vehicle) => {
-//     setSelectedVehicle(vehicle);
-//   };
+const VehicleList = () => {
+  const vehicles = useSelector(state => state.vehicles);
+  const dispatch = useDispatch();
 
   const handleDeleteClick = (id) => {
-    setVehicles((prevVehicles) => prevVehicles.filter((vehicle) => vehicle.id !== id));
+    dispatch(removeVehicle(id));
   };
 
   return (
@@ -75,7 +36,6 @@ const VehicleList = ({ vehicles, setVehicles, setSelectedVehicle }) => {
                 <td className="py-2 px-4 text-center border-b-2">{vehicle.status}</td>
                 <td className="py-2 px-4 text-center border-b-2">{vehicle.scheduledChargingTime}</td>
                 <td className="py-2 px-4 text-center border-b">{vehicle.lastChargeTime}</td>
-
                 <td className="py-2 px-4 text-center border-b-2">
                   <Link to={`/edit/${vehicle.id}`} className="bg-blue-500 text-white px-3 py-1 rounded mr-2">Edit</Link>
                   <button

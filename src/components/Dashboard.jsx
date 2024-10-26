@@ -1,7 +1,14 @@
 import React from 'react';
+import { useSelector } from 'react-redux';
 import { PieChart, Pie, Cell, Tooltip, BarChart, Bar, XAxis, YAxis, CartesianGrid, Legend, ResponsiveContainer } from 'recharts';
 
-const Dashboard = ({ vehicles }) => {
+const Dashboard = () => {
+    const vehicles = useSelector(state => state.vehicles || []); // Use an empty array as a default
+
+    if (vehicles.length === 0) {
+        return <div>Loading vehicles...</div>; // Optional: show loading state
+    }
+
     const lowBatteryVehicles = vehicles.filter(vehicle => vehicle.battery <= 15);
 
     const averageBattery = vehicles.length > 0
@@ -22,10 +29,8 @@ const Dashboard = ({ vehicles }) => {
         status: vehicle.status, 
     }));
 
-
     const COLORS = ['#0088FE', '#00C49F', '#FFBB28', '#FF8042'];
 
-  
     const getBatteryColor = (status) => {
         if (status === "In Transit") return '#2563eb'; 
         else if (status === "Idle") return '#ffbb28'; 
@@ -93,12 +98,11 @@ const Dashboard = ({ vehicles }) => {
                             <Tooltip />
                         </PieChart>
                     </ResponsiveContainer>
-
                 </div>
             </div>
 
             <div className="p-6 bg-white rounded-lg shadow-lg mb-8">
-                <h3 className="font-semibold text-gray-600 mb-4">Battery Levels Across Fleet</h3>
+                <h3 className="font-semibold text-gray-600 mb-4">Battery Levels Across Fleet (10% battery Increase in 6 sec for simulation purpose & 1% dec for in Transit state)</h3>
                 <ResponsiveContainer width="100%" height={300}>
                     <BarChart data={batteryDistribution}>
                         <CartesianGrid strokeDasharray="3 3" />
@@ -113,7 +117,6 @@ const Dashboard = ({ vehicles }) => {
                         </Bar>
                     </BarChart>
                 </ResponsiveContainer>
-
 
                 <div className="mt-4">
                     <h4 className="font-semibold text-gray-600">Color Legend:</h4>

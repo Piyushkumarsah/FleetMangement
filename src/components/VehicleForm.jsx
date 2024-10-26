@@ -1,5 +1,7 @@
 import React, { useState } from 'react';
 import { useNavigate, useParams } from 'react-router-dom';
+import { useDispatch, useSelector } from 'react-redux';
+import { addVehicle, updateVehicle } from '../features/vehicles/vehicleSlice';
 
 const formatDateTime = (dateTime) => {
   const options = {
@@ -14,20 +16,22 @@ const formatDateTime = (dateTime) => {
   return new Intl.DateTimeFormat('en-US', options).format(new Date(dateTime));
 };
 
-const VehicleForm = ({ vehicles, setVehicles }) => {
+const VehicleForm = () => {
   const { id } = useParams();
   const navigate = useNavigate();
+  const dispatch = useDispatch();
 
   const isEdit = Boolean(id);
+  const vehicles = useSelector(state => state.vehicles);
   const currentVehicle = isEdit ? vehicles.find(v => v.id === id) : null;
 
   const [vehicleData, setVehicleData] = useState({
-    id:  currentVehicle?.id || '',
+    id: currentVehicle?.id || '',
     battery: currentVehicle?.battery || 0,
     distanceTravelled: currentVehicle?.distanceTravelled || 0,
     status: currentVehicle?.status || 'Idle',
-    lastChargeTime: currentVehicle?.lastChargeTime ||formatDateTime( new Date()), 
-    scheduledChargingTime: currentVehicle?.scheduledChargingTime || '', 
+    lastChargeTime: currentVehicle?.lastChargeTime || formatDateTime(new Date()),
+    scheduledChargingTime: currentVehicle?.scheduledChargingTime || '',
   });
 
   const handleChange = (e) => {
@@ -44,13 +48,13 @@ const VehicleForm = ({ vehicles, setVehicles }) => {
         vehicleData.status === 'Charging' && vehicleData.scheduledChargingTime
           ? formatDateTime(vehicleData.scheduledChargingTime)
           : vehicleData.lastChargeTime,
-      scheduledChargingTime: vehicleData.scheduledChargingTime ? formatDateTime(vehicleData.scheduledChargingTime) : ''
+      scheduledChargingTime: vehicleData.scheduledChargingTime ? formatDateTime(vehicleData.scheduledChargingTime) : '',
     };
 
     if (isEdit) {
-      setVehicles(vehicles.map(v => (v.id === id ? updatedVehicleData : v)));
+      dispatch(updateVehicle(updatedVehicleData));
     } else {
-      setVehicles([...vehicles, updatedVehicleData]);
+      dispatch(addVehicle(updatedVehicleData));
     }
     navigate('/vehicles');
   };
@@ -79,20 +83,17 @@ const VehicleForm = ({ vehicles, setVehicles }) => {
             value={vehicleData.battery}
             onChange={handleChange}
             className="w-full p-2 border rounded"
-            min="0"
-            max="100"
             required
           />
         </div>
         <div className="mb-4">
-          <label className="block font-medium">Distance Travelled (km)</label>
+          <label className="block font-medium">Total Distance (km)</label>
           <input
             type="number"
             name="distanceTravelled"
             value={vehicleData.distanceTravelled}
             onChange={handleChange}
             className="w-full p-2 border rounded"
-            required
           />
         </div>
         <div className="mb-4">
@@ -102,33 +103,25 @@ const VehicleForm = ({ vehicles, setVehicles }) => {
             value={vehicleData.status}
             onChange={handleChange}
             className="w-full p-2 border rounded"
-            required
           >
+            <option value="Idle">Idle</option>
             <option value="In Transit">In Transit</option>
             <option value="Charging">Charging</option>
-            <option value="Idle">Idle</option>
           </select>
         </div>
-
-        {vehicleData.status === 'Charging' && (
-          <div className="mb-4">
-            <label className="block font-medium">Scheduled Charging Time (MM/DD/YYYY HH:MM:SS AM/PM)</label>
-            <input
-              type="datetime-local"
-              name="scheduledChargingTime"
-              value={vehicleData.scheduledChargingTime}
-              onChange={handleChange}
-              className="w-full p-2 border rounded"
-              required
-            />
-          </div>
-        )}
-
-        <div className="flex justify-end">
-          <button type="submit" className="bg-blue-600 text-white px-4 py-2 rounded">
-            {isEdit ? 'Update Vehicle' : 'Add Vehicle'}
-          </button>
+        <div className="mb-4">
+          <label className="block font-medium">Scheduled Charging Time</label>
+          <input
+            type="datetime-local"
+            name="scheduledChargingTime"
+            value={vehicleData.scheduledChargingTime}
+            onChange={handleChange}
+            className="w-full p-2 border rounded"
+          />
         </div>
+        <button type="submit" className="bg-blue-500 text-white px-4 py-2 rounded">
+          {isEdit ? 'Update Vehicle' : 'Add Vehicle'}
+        </button>
       </form>
     </div>
   );
