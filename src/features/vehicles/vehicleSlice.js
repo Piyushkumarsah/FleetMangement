@@ -1,12 +1,11 @@
 import { createSlice } from '@reduxjs/toolkit';
-import demoVehicles from '../../components/DemoVehicles' // Import demo data
+import demoVehicles from '../../components/DemoVehicles' 
 
 const vehicleSlice = createSlice({
   name: 'vehicles',
   initialState: [],
   reducers: {
     initializeVehicles: (state) => {
-      // Populate state with demoVehicles initially
       return demoVehicles;
     },
     addVehicle: (state, action) => {

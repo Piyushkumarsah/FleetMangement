@@ -3,10 +3,10 @@ import { useSelector } from 'react-redux';
 import { PieChart, Pie, Cell, Tooltip, BarChart, Bar, XAxis, YAxis, CartesianGrid, Legend, ResponsiveContainer } from 'recharts';
 
 const Dashboard = () => {
-    const vehicles = useSelector(state => state.vehicles || []); // Use an empty array as a default
+    const vehicles = useSelector(state => state.vehicles || []); 
 
     if (vehicles.length === 0) {
-        return <div>Loading vehicles...</div>; // Optional: show loading state
+        return <div>Loading vehicles...</div>; 
     }
 
     const lowBatteryVehicles = vehicles.filter(vehicle => vehicle.battery <= 15);

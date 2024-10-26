@@ -3,16 +3,16 @@ import { BrowserRouter as Router, Route, Routes } from 'react-router-dom';
 import { useDispatch, useSelector } from 'react-redux';
 import VehicleForm from './components/VehicleForm';
 import Navbar from './components/Navbar';
-import { initializeVehicles } from './features/vehicles/vehicleSlice'; // Import the initialize action
+import { initializeVehicles } from './features/vehicles/vehicleSlice'; 
 
-import { updateVehicleStatus } from './features/vehicles/vehicleSlice'; // Adjust the import path
+import { updateVehicleStatus } from './features/vehicles/vehicleSlice'; 
 import VehicleList from './components/VehicleList';
 import Dashboard from './components/Dashboard';
 function App() {
   const dispatch = useDispatch();
   const vehicles = useSelector(state => state.vehicles || []);
   useEffect(() => {
-    dispatch(initializeVehicles()); // Dispatch to initialize vehicles
+    dispatch(initializeVehicles()); 
   }, [dispatch]);
   useEffect(() => {
     const intervalId = setInterval(() => {
