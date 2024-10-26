@@ -136,7 +136,7 @@ const Dashboard = () => {
             </div>
 
             <div className="p-6 bg-white rounded-lg shadow-lg mb-8">
-                <h3 className="font-semibold text-gray-600 mb-4">Estimated Charging Time for Vehicles</h3>
+                <h3 className="font-semibold text-gray-600 mb-4">Estimated Charging Time for Vehicles(Considering 10% inc in 10min)</h3>
                 <ul>
                     {vehicles.map(vehicle => (
                         <li key={vehicle.id} className="text-gray-700">
